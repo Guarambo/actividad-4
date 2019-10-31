@@ -40,7 +40,7 @@ pipelineJob(pipeline_java_name) {
                         url(url_repo)
                     }
                 }
-                scriptPath("${jenkinsfile_angular_folder}/Jenkinsfile")
+                scriptPath("${jenkinsfile_java_folder}/Jenkinsfile")
             }
         }
     }

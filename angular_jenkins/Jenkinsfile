@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+    
+    tools {nodejs "node_tool"}
+    
+    stages {
+        stage("Checkout") {
+            steps {
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/NagatoHvirtual/angularTestJenkins.git']]])
+            }
+        }
+        
+        stage("Build") {
+            steps {
+                nodejs("node_tool") {
+                    bat "npm install"
+                    bat "npm update"
+                }
+                nodejs("node_tool") {
+                    bat "npm run build"
+                }
+            }
+        }
+        
+        stage("Scan with SonarQube") {
+            environment {
+                scannerHome = tool "sonar_scanner"
+            }
+            
+            steps {
+                withSonarQubeEnv("sonarqube_server") {
+                    bat """
+                    "${scannerHome}/bin/sonar-scanner" \
+                    -Dsonar.projectKey=angularProject \
+                    -Dsonar.projectName=Angular \
+                    -Dsonar.projectVersion=0.1 \
+                    -Dsonar.sources=src \
+                    -Dsonar.exclusions=**/node_modules/**
+                    """
+                }
+                
+                timeout(time: 10, unit: "MINUTES") {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+        
+        stage("Deploy") {
+            steps {
+                //Enviar carpeta dist a la otra VM
+                //Ejemplo
+                //sh 'scp -r dist/angularTestJenkins/* root@172.18.0.4:/usr/share/nginx/html/'
+                bat "dir"
+            }
+        }
+    }
+}

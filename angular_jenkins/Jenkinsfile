@@ -12,13 +12,6 @@ pipeline {
         
         stage("Build") {
             steps {
-                nodejs("node_tool") {
-                    bat "npm install"
-                    bat "npm update"
-                }
-                nodejs("node_tool") {
-                    bat "npm run build"
-                }
             }
         }
         
@@ -28,20 +21,29 @@ pipeline {
             }
             
             steps {
-                withSonarQubeEnv("sonarqube_server") {
-                    bat """
-                    "${scannerHome}/bin/sonar-scanner" \
-                    -Dsonar.projectKey=angularProject \
-                    -Dsonar.projectName=Angular \
-                    -Dsonar.projectVersion=0.1 \
-                    -Dsonar.sources=src \
-                    -Dsonar.exclusions=**/node_modules/**
-                    """
-                }
-                
-                timeout(time: 10, unit: "MINUTES") {
-                    waitForQualityGate abortPipeline: true
-                }
+                parallel "Scan": {
+                    withSonarQubeEnv("sonarqube_server") {
+                        bat """
+                        "${scannerHome}/bin/sonar-scanner" \
+                        -Dsonar.projectKey=angularProject \
+                        -Dsonar.projectName=Angular \
+                        -Dsonar.projectVersion=0.1 \
+                        -Dsonar.sources=src \
+                        -Dsonar.exclusions=**/node_modules/**
+                        """
+                    }
+                    timeout(time: 10, unit: "MINUTES") {
+                        waitForQualityGate abortPipeline: true
+                    }
+                }, "Build": {
+                    nodejs("node_tool") {
+                        bat "npm install"
+                        bat "npm update"
+                    }
+                    nodejs("node_tool") {
+                        bat "npm run build"
+                    }
+                }, failFast: true
             }
         }
         

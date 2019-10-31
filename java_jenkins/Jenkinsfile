@@ -29,6 +29,9 @@ pipeline {
                         -Dsonar.java.binaries=./target/
                         """
                     }
+                    timeout(time: 10, unit: "MINUTES") {
+                        waitForQualityGate abortPipeline: true
+                    }
                 }, "Build": {
                     bat "mvn clean install"
                 },

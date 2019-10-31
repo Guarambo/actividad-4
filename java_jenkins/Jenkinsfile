@@ -18,7 +18,21 @@ pipeline {
                 scannerHome = tool "sonar_scanner"
             }
             steps {
-                bat "mvn clean install -DskipTests"
+                parallel "Scan": {
+                    withSonarQubeEnv("sonarqube_server") {
+                        bat """
+                        "${scannerHome}/bin/sonar-scanner" \
+                        -Dsonar.projectKey=earTest \
+                        -Dsonar.projectName=Act-4-EarTest \
+                        -Dsonar.projectVersion=0.1 \
+                        -Dsonar.sources=testWAR/src \
+                        -Dsonar.java.binaries=./target/
+                        """
+                    }
+                }, "Build": {
+                    bat "mvn clean install"
+                },
+                failFast: true
             }
 
         }

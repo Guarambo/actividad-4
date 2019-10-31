@@ -26,8 +26,8 @@ pipeline {
                         -Dsonar.projectName=Act-4-EarTest \
                         -Dsonar.projectVersion=0.1 \
                         -Dsonar.sources=testWAR/src \
-                        -Dsonar.java.binaries=./target/
                         """
+                        //-Dsonar.java.binaries=./target/
                     }
                     timeout(time: 10, unit: "MINUTES") {
                         waitForQualityGate abortPipeline: true

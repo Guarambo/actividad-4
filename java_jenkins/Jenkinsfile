@@ -42,7 +42,17 @@ pipeline {
         
         stage("Deploy") {
             steps {
-                bat "dir"
+                bat "scp -r testEAR 192.168.2.12:C:/Users/Public/Documents/"
+
+                bat """
+                "ssh 192.168.2.12 C:/Progam Files/IBM/WebSphere/AppServer/bin/wsadmin.sh" \
+                -f /usr/share/compiled-app/deploy.jython \
+                -lang jython \
+                -conntype SOAP \
+                -host localhost \
+                -user administrador \
+                -password administrador
+                """
             }
         }
     }

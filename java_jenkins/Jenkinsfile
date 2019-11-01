@@ -42,7 +42,7 @@ pipeline {
         
         stage("Deploy") {
             steps {
-                bat "scp 'C:/Users/VM 1/Documents/repo/text.txt 192.168.2.12:C:/Users/VM 1/Documents/Carpeta1/'"
+                bat "scp -T 'C:/Users/VM 1/Documents/repo/text.txt 192.168.2.12:C:/Users/VM 1/Documents/Carpeta1/'"
 /*                 bat "scp -r testEAR '192.168.2.12:C:/Users/VM 2/Documents/'"
 
                 bat """

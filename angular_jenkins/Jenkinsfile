@@ -52,7 +52,6 @@ pipeline {
                 //Enviar carpeta dist a la otra VM
                 //Ejemplo
                 //sh 'scp -r dist/angularTestJenkins/* root@172.18.0.4:/usr/share/nginx/html/'
-                bat "dir"
             }
         }
     }

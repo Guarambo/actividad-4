@@ -4,6 +4,12 @@ pipeline {
     tools {
         maven "maven_tool"
         jdk "jdk8"
+        
+        /*
+        Link para agregar credenciales de Oracle, al configurar un JDK para descargar
+        Enter Oracle Credentials
+        http://<hostname>/descriptorByName/hudson.tools.JDKInstaller/enterCredential
+        */
     }
     
     stages {
@@ -42,13 +48,11 @@ pipeline {
         
         stage("Deploy") {
             steps {
-                bat "scp -r testEAR 192.168.2.12:C/Users/Public/Documents/"
-                //bat "scp -T 'C:/Users/VM 1/Documents/repo/text.txt 192.168.2.12:C:/Users/VM 1/Documents/Carpeta1/'"
-/*                 bat "scp -r testEAR '192.168.2.12:C:/Users/VM 2/Documents/'"
+                //bat "scp -r testEAR VM 2@192.168.80.11:C:/Users/VM 2/Documents/act-4/"
 
-                bat """
-                "ssh 192.168.2.12 C:/Progam Files/IBM/WebSphere/AppServer/bin/wsadmin.sh" \
-                -f C:/Users/VM 2/Documents/deploy.jython \
+/*                 bat """
+                "ssh VM 2@192.168.2.12 C:/Progam Files/IBM/WebSphere/AppServer/bin/wsadmin.sh" \
+                -f C:/Users/VM 2/Documents/act-4/deploy.jython \
                 -lang jython \
                 -conntype SOAP \
                 -host localhost \
